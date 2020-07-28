@@ -1,0 +1,24 @@
+# IMPORTANT. my file structure consists of 2 parts - UI and API.
+# So first of all be sure you are in folder with angular configuration files.
+#       my-code
+#             --ui
+#             --api
+
+
+# Tests are run everytime you push new commits.
+test:karma:
+  stage: test
+  image: trion/ng-cli-karma
+  allow_failure: false
+  before_script:
+# Need come in ui folder. Look at project structure in avove comments.
+    - cd ui && npm install && npm install @angular-devkit/build-angular
+  script:
+# really we must come into ui folder, but we are here because of before_script
+    - ng test --code-coverage --progress false --watch false
+  coverage: '/Lines \W+: (\d+\.\d+)%.*/'
+  artifacts:
+    paths:
+      - ui/coverage/
+  tags:
+    - docker
